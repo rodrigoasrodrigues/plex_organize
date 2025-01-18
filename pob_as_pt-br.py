@@ -7,16 +7,14 @@ to save space, we create hard links
 
 import os
 
-def create_symlink(file_path):
-    # Create symbolic link
+def move(file, matching_file):
+    # move file
     try:
-        link_name = file_path.replace('.pob', '.por')
-        os.link(file_path, link_name)
-        print(f'Hardlink created: {link_name}')
-    except FileExistsError:
-        print(f'File already exists: {file_path.replace(".pob", ".por")}')
+        os.rename(file, matching_file)
+        print(f'Moved file: {file} to {matching_file}')
     except Exception as e:
-        print(f'Error creating link: {e}')
+        print(f'Error moving file: {e}')
+        
 
 def main():
     # Get current directory
@@ -24,20 +22,20 @@ def main():
 
     # Get all files in current directory and subdirectories
     files_pob = []
-    files_por = []
+    files_pt_br = []
     for root, dirs, filenames in os.walk(current_dir):
         for filename in filenames:
             if filename.endswith('.pob.srt'):
                 files_pob.append(os.path.join(root, filename))
-            elif filename.endswith('.por.srt'):
-                files_por.append(os.path.join(root, filename))
+            elif filename.endswith('.pt-br.srt'):
+                files_pt_br.append(os.path.join(root, filename))
     
 
     # Create symbolic links for subtitles
     for file in files_pob:
-        matching_file = file.replace('.pob', '.por')
-        if matching_file not in files_por:
-            create_symlink(file)
+        matching_file = file.replace('.pob', '.pt-br')
+        if matching_file not in files_pt_br:
+            move(file, matching_file)
 
 
 if __name__ == '__main__':
